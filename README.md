@@ -1,7 +1,7 @@
-# OpenWrt Feeds
+# OpenWrt sdk
 
 ## 简介
-本项目是一个用于 OpenWrt 的 feeds 软件源。
+一个自用的 OpenWrt SDK 。
 
 ## 使用
 您可以从以下地址下载最新固件：
