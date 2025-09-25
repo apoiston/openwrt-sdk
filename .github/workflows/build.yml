@@ -62,12 +62,12 @@ jobs:
           mv openwrt/SNAPSHOT public/
           rsync -a --quiet --include='*.buildinfo' --exclude='*' openwrt/apps/ targets/
 
-      - name: deploy cf pages
-        uses: cloudflare/wrangler-action@v3
-        with:
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          command: pages deploy public --project-name=infinitypackages --branch=apps
+      # - name: deploy cf pages
+      #   uses: cloudflare/wrangler-action@v3
+      #   with:
+      #     accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      #     apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      #     command: pages deploy public --project-name=infinitypackages --branch=apps
 
       - name: commit
         continue-on-error: true
