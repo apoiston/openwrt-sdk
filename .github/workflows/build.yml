@@ -29,6 +29,20 @@ jobs:
           uname -sr
           lsb_release -a
           free -h
+          df -Th
+
+      - name: free disk space
+        uses: endersonmenezes/free-disk-space@v2
+        with:
+          remove_android: true
+          remove_dotnet: true
+          remove_haskell: true
+          remove_tool_cache: false
+          remove_swap: true
+          remove_packages: "azure-cli google-cloud-cli microsoft-edge-stable google-chrome-stable firefox postgresql* temurin-* *llvm* mysql* dotnet-sdk-*"
+          remove_packages_one_command: true
+          remove_folders: "/usr/share/swift /usr/share/miniconda /usr/share/az* /usr/local/share/chromium /usr/local/share/powershell /usr/local/aws-cli /usr/local/aws-sam-cli /usr/share/gradle"      
+          testing: false
 
       - name: checkout
         uses: actions/checkout@v4
@@ -44,30 +58,11 @@ jobs:
           prepare_sdk: ${{ secrets.PREPARE_SDK }}
           gh_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: upload
-        uses: actions/upload-artifact@v4
-        with:
-          name: packages
-          path: |
-            ./openwrt/apps/*
-            ./openwrt/apps.tar.gz
-            
       - name: prepare
         continue-on-error: true
         run: |
           date +"%Y-%m-%d %H:%M:%S"
-          git clone --depth=1 --quiet --branch packages https://github.com/apoiston/index.git
-          sed -i "s/N\/A/$(date +"%Y-%m-%d %H:%M:%S")/g" index/index.html
-          rsync -a --quiet --include='*.html' --include='*.css' --include='*.js' --exclude='*' index/ public/
-          mv openwrt/SNAPSHOT public/
           rsync -a --quiet --include='*.buildinfo' --exclude='*' openwrt/apps/ targets/
-
-      # - name: deploy cf pages
-      #   uses: cloudflare/wrangler-action@v3
-      #   with:
-      #     accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      #     apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      #     command: pages deploy public --project-name=infinitypackages --branch=apps
 
       - name: commit
         continue-on-error: true
