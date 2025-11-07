@@ -37,7 +37,7 @@ jobs:
       - name: build
         uses: apoiston/actions@target
         with:
-          config_buildinfo: config/config.buildinfo
+          config_buildinfo: builder/config.buildinfo
           private-key: ${{ secrets.PRIVATE_KEY }}
           public-key: ${{ secrets.PUBLIC_KEY }}
           prepare_compile: ${{ secrets.PREPARE_COMPILE }}
