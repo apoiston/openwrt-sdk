@@ -64,6 +64,14 @@ jobs:
           date +"%Y-%m-%d %H:%M:%S"
           rsync -a --quiet --include='*.buildinfo' --exclude='*' openwrt/builder/ targets/
 
+      - name: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: packages
+          path: |
+            ./openwrt/builder/*.gz
+            ./openwrt/apps.tar.gz
+
       - name: commit
         continue-on-error: true
         run: |
