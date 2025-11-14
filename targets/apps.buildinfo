@@ -1,9 +1,9 @@
 apk-mbedtls - 3.0.0_pre20251007-r1
 attendedsysupgrade-common - 9
-base-files - 1671~05feabfd09
+base-files - 1671~971c058cf5
 bash - 5.2.37-r1
 block-mount - 2025.10.03~12858e28-r1
-bnx2-firmware - 20251021-r1
+bnx2-firmware - 20251111-r1
 busybox - 1.37.0-r5
 ca-bundle - 20250419-r1
 cgi-io - 2025.10.04~d4b9fb11-r1
@@ -20,7 +20,7 @@ grub2 - 2.12-r1
 grub2-bios-setup - 2.12-r1
 grub2-efi - 2.12-r1
 htop - 3.4.1-r1
-i915-firmware-dmc - 20251021-r1
+i915-firmware-dmc - 20251111-r1
 ip-full - 6.17.0-r1
 jansson4 - 2.14-r3
 jshn - 2025.11.03~e357be61-r1
@@ -239,7 +239,7 @@ ppp-mod-pppoe - 2.5.2-r2
 procd - 2025.10.04~3b3501ab-r1
 procd-seccomp - 2025.10.04~3b3501ab-r1
 procd-ujail - 2025.10.04~3b3501ab-r1
-r8169-firmware - 20251021-r1
+r8169-firmware - 20251111-r1
 rpcbind - 1.2.6-r2
 rpcd - 2025.11.07~91700007-r1
 rpcd-mod-file - 2025.11.07~91700007-r1
