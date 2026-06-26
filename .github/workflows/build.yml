@@ -1,0 +1,89 @@
+name: Build
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * 0"
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-24.04
+    permissions:
+      actions: write
+      contents: write
+
+    steps:
+      - name: Set timezone
+        run: |
+          sudo timedatectl set-timezone Asia/Shanghai
+          date +"%Y-%m-%d %H:%M:%S %z"
+                    
+      - name: Show runner info
+        run: |
+          date +"%Y-%m-%d %H:%M:%S %z"
+          lscpu | grep -E '^Architecture|^CPU\(s\):|^Model name'
+          uname -sr
+          lsb_release -a
+          free -h
+          df -Th
+
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Build
+        uses: apoiston/actions@builder
+        with:
+          private_key: ${{ secrets.PRIVATE_KEY }}
+          public_key: ${{ secrets.PUBLIC_KEY }}
+          prepare_environment: ${{ secrets.PREPARE_ENVIRONMENT }}
+          prepare_config: ${{ secrets.PREPARE_CONFIG }}
+          export_sdk: ${{ secrets.EXPORT_SDK }}
+          config_buildinfo: builder/config.buildinfo
+          enable_build_tools: true
+          enable_build_toolchain: true
+          enable_build_kernel: true
+          enable_build_full: true
+          enable_export_sdk: true
+
+      - name: Prepare
+        continue-on-error: true
+        run: |
+          rsync -a --quiet --include='*.buildinfo' --exclude='*' openwrt/builder/ buildinfo/
+
+      - name: Commit
+        continue-on-error: true
+        run: |
+          git add buildinfo/
+          git commit -m "build: $(date +"%Y-%m-%d %H:%M:%S %z") [SDK]"
+          git push origin main --force
+
+      - name: Create tag
+        id: create_tag
+        run: |
+          TAG="$(date '+%y.%m.%d')"
+          if git ls-remote --tags origin "$TAG" | grep -q "$TAG"; then
+            git push origin --delete "$TAG" || true
+          fi
+          git tag -d "$TAG" 2>/dev/null || true
+          git tag "$TAG"
+          git push origin "$TAG"
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+
+      - name: Release
+        uses: softprops/action-gh-release@v3
+        with:
+          name: OpenWrt SDK ${{ steps.create_tag.outputs.tag }}
+          tag_name: ${{ steps.create_tag.outputs.tag }}
+          body_path: openwrt/CHANGELOG.md
+          files: |
+            openwrt/builder/*.zst
+            openwrt/builder/*.txt
+          make_latest: true
+          draft: false
+          prerelease: false
