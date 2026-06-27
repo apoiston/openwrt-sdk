@@ -2,6 +2,19 @@ name: Build
 
 on:
   workflow_dispatch:
+    inputs:
+      enable_build_tools:
+        description: 'Build tools'
+        required: false
+        type: boolean
+        default: false
+
+      enable_build_kernel:
+        description: 'Build kernel'
+        required: false
+        type: boolean
+        default: false
+
   schedule:
     - cron: "0 6 * * 0"
 
@@ -45,10 +58,8 @@ jobs:
           prepare_config: ${{ secrets.PREPARE_CONFIG }}
           export_sdk: ${{ secrets.EXPORT_SDK }}
           config_buildinfo: builder/config.buildinfo
-          enable_build_tools: true
-          enable_build_toolchain: true
-          enable_build_kernel: true
-          enable_build_full: true
+          enable_build_tools: ${{ inputs.enable_build_tools == true && 'true' || 'false' }}
+          enable_build_kernel: ${{ inputs.enable_build_kernel == true && 'true' || 'false' }}
           enable_export_sdk: true
 
       - name: Prepare
