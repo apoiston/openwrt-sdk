@@ -2,6 +2,13 @@ name: Clean
 
 on:
   workflow_dispatch:
+    inputs:
+      delete_releases_days:
+        description: 'Release retention days'
+        required: false
+        type: string
+        default: '30'
+
   schedule:
     - cron: "0 4 * * 0"
 
@@ -22,3 +29,4 @@ jobs:
         uses: apoiston/actions@cleaner
         with:
           enable_delete_releases: true
+          delete_releases_days: ${{ inputs.delete_releases_days || '30' }}
